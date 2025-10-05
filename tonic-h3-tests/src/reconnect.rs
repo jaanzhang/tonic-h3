@@ -17,16 +17,6 @@ async fn h3_s2n_test() {
     reconnect_test(crate::run_test_s2n_server, crate::run_s2n_client).await;
 }
 
-#[tokio::test]
-#[serial_test::serial]
-async fn h3_msquic_test() {
-    reconnect_test(
-        crate::msquic_util::run_test_msquic_server,
-        crate::msquic_util::run_msquic_client,
-    )
-    .await;
-}
-
 async fn reconnect_test<T: H3Connector>(
     run_server: fn(SocketAddr, CancellationToken) -> (tokio::task::JoinHandle<()>, SocketAddr),
     run_client: fn(Uri, CancellationToken) -> (tokio::task::JoinHandle<()>, T),

@@ -13,11 +13,6 @@ async fn h3_s2n_test() {
     h3_test(crate::run_test_s2n_server).await;
 }
 
-#[tokio::test]
-async fn msquic_test() {
-    h3_test(crate::msquic_util::run_test_msquic_server).await;
-}
-
 // takes in the fn to start the server and then send request to the server.
 #[allow(clippy::type_complexity)]
 async fn h3_test(
@@ -89,32 +84,6 @@ async fn h3_test(
     }
     s2n_ep.wait_idle().await.unwrap();
 
-    // test msquic client
-    // reg should be the last thing to drop, otherwise it will wait for other handle to drop and deadlock.
-    let (reg, config) = crate::make_test_msquic_client_parts();
-    let msquic_waiter = h3_util::msquic::client::H3MsQuicClientWaiter::default();
-    {
-        let channel = tonic_h3::H3Channel::new(
-            h3_util::msquic::client::H3MsQuicConnector::new(
-                config,
-                reg.clone(),
-                uri.clone(),
-                msquic_waiter.clone(),
-            ),
-            uri.clone(),
-        );
-        let mut client = crate::greeter_client::GreeterClient::new(channel);
-        {
-            let request = tonic::Request::new(crate::HelloRequest {
-                name: "Tonic-MsQuic".into(),
-            });
-            let response = client.say_hello(request).await.unwrap();
-            tracing::debug!("RESPONSE={:?}", response);
-        }
-        // trigger reg shutdown and wait for connection to close.
-        reg.shutdown();
-        msquic_waiter.wait_shutdown().await;
-    }
     token.cancel();
     h_svr.await.unwrap();
 }

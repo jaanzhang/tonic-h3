@@ -21,5 +21,5 @@ pub trait H3Acceptor {
 
     fn accept(
         &mut self,
-    ) -> impl std::future::Future<Output = Result<Option<Self::CONN>, crate::Error>> + std::marker::Send;
+    ) -> impl std::future::Future<Output = Result<Option<Self::CONN>, crate::Error>> + Send;
 }

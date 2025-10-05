@@ -11,7 +11,7 @@ rustls.workspace = true
 serial_test.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
-tonic-h3 = {workspace = true, features = ["quinn", "msquic", "s2n-quic", "quiche"]}
+tonic-h3 = { workspace = true, features = ["quinn", "s2n-quic", "quiche"] }
 tonic.workspace = true
 tonic-prost.workspace = true
 tracing-subscriber.workspace = true
@@ -24,7 +24,6 @@ http.workspace = true
 # need to enable rustls
 quinn.workspace = true
 # need to link with msquic
-msquic.workspace = true
 futures.workspace = true
 hyper.workspace = true
 
